@@ -65,8 +65,8 @@ def plot_fermi(pc: np.ndarray, n: np.ndarray):
 @_setup_axes
 def plot_specter(pc: np.ndarray, n: np.ndarray):
     data = pd.DataFrame()
-    x_label = '$pc, кЭв$'
-    y_label = '$N, с$'
+    x_label = '$pc$, кэВ'
+    y_label = '$N$, 1/с'
 
     data[x_label] = pc
     data[y_label] = n
@@ -76,7 +76,7 @@ def plot_specter(pc: np.ndarray, n: np.ndarray):
     ax.set_xlim(0, None)
     ax.set_ylim(0, None)
 
-    ax.set_title('\\beta-спектр')
+    ax.set_title('$\\beta$-спектр')
 
     return ax
 
@@ -91,6 +91,8 @@ def main():
     # Здесь устанавливается ток соответствующий конверсионному пику
     conversion_peak = 3.0515
     specter['pc'] = _scale_to_impulse(specter['I'].values, conversion_peak)
+
+    plot_specter(specter['pc'], specter['N'])
 
     # Fermi
     plot_fermi(specter['pc'], specter['N'])
