@@ -42,7 +42,7 @@ def plot_freq(T: np.ndarray, f_0: np.ndarray, f: np.ndarray):
 
 
 @_setup_axes
-def plot_kappa(T: np.array, f_0: np.array, f: np.array):
+def plot_inv_kappa(T: np.array, f_0: np.array, f: np.array):
     data = pd.DataFrame()
     T_label = '$T$, K'
     kappa_label = '$\\frac{1}{\\kappa}$'
@@ -56,6 +56,20 @@ def plot_kappa(T: np.array, f_0: np.array, f: np.array):
 
     return ax
 
+@_setup_axes
+def plot_kappa(T: np.array, f_0: np.array, f: np.array):
+    data = pd.DataFrame()
+    T_label = '$T$, K'
+    kappa_label = '$\\frac{1}{\\kappa}$'
+
+    data[T_label] = T
+    data[kappa_label] = (f_0 ** 2 - f ** 2) / f ** 2
+
+    ax = data.plot.scatter(x=T_label, y=kappa_label, c='red')
+
+    ax.set_title('Зависимость $\\frac{f_0^2 - f^2}{f^2}$ от $T$.')
+
+    return ax
 
 def _compute_temperature(V: np.array):
     t_0 = 21 + 273
@@ -71,6 +85,7 @@ def main():
     f = resonance_freq['f']
 
     plot_freq(T, f_0, f)
+    plot_inv_kappa(T, f_0, f)
     plot_kappa(T, f_0, f)
 
 
