@@ -29,7 +29,7 @@ def plot_freq(T: np.ndarray, f_0: np.ndarray, f: np.ndarray):
     f_0_label = '$f_0$, Гц'
     f_label = '$f$, Гц'
 
-    data[T_label] = T + 273
+    data[T_label] = T
     data[f_0_label] = f_0
     data[f_label] = f
 
@@ -50,7 +50,7 @@ def plot_kappa(T: np.array, f_0: np.array, f: np.array):
     T_label = '$T$, K'
     kappa_label = '$\\kappa$'
 
-    data[T_label] = T + 273
+    data[T_label] = T
     data[kappa_label] = f ** 2 / (f_0 ** 2 - f ** 2)
 
     ax = data.plot.scatter(x=T_label, y=kappa_label, c='red')
@@ -63,14 +63,20 @@ def plot_kappa(T: np.array, f_0: np.array, f: np.array):
     return ax
 
 
+def _compute_temperature(V: np.array):
+    t_0 = 21 + 273
+    return V / 41 + t_0
+
+
 def main():
     resonance_freq = pd.read_csv('./data/res_freq.csv')
-    plot_freq(resonance_freq['T'].values,
-              resonance_freq['f_0'].values,
-              resonance_freq['f'].values)
-    plot_kappa(resonance_freq['T'].values,
-               resonance_freq['f_0'].values,
-               resonance_freq['f'].values)
+
+    T = _compute_temperature(resonance_freq['V'])
+    f_0 = resonance_freq['f_0']
+    f = resonance_freq['f']
+
+    plot_freq(T, f_0, f)
+    plot_kappa(T, f_0, f)
 
 
 if __name__ == '__main__':
