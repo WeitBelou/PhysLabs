@@ -17,7 +17,8 @@ def _setup_axes(plotter: Callable[[Any], plt.Axes]) -> Callable[[Any], None]:
 @_setup_axes
 def plot_specter(v_from_alpha: np.ndarray, v_0: float, r: float):
     def _convert_from_alpha_to_wavelength(alpha: np.ndarray):
-        return alpha
+        data = pd.read_csv('./data/angle_to_wavelength.csv')
+        return data['wavelength']
 
     def _convert_to_i(v: np.ndarray, r: float) -> np.ndarray:
         return v / r
@@ -34,7 +35,7 @@ def plot_specter(v_from_alpha: np.ndarray, v_0: float, r: float):
     data[y_label] = _normalize_to_bulb_specter(_convert_to_i(v_from_alpha['V'] - v_0, r))
     ax = data.plot.scatter(x=x_label, y=y_label)
     ax.set_ylim(0, None)
-    ax.set_xlim(1500, 3500)
+    ax.set_xlim(4000, 11000)
 
     ax.set_ylim(0, np.max(data[y_label]) * 1.1)
 
