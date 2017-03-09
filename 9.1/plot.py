@@ -43,6 +43,10 @@ def plot_freq(T: np.ndarray, f_0: np.ndarray, f: np.ndarray):
 
 @_setup_axes
 def plot_inv_kappa(T: np.array, f_0: np.array, f: np.array):
+    def compute_intersection(x: np.ndarray, y: np.ndarray) -> np.poly1d:
+        fit = np.polyfit(x[4:-4], y[4:-4], 1)
+        return np.poly1d(fit)
+
     data = pd.DataFrame()
     T_label = '$T$, K'
     kappa_label = '$\\frac{1}{\\kappa}$'
@@ -52,7 +56,17 @@ def plot_inv_kappa(T: np.array, f_0: np.array, f: np.array):
 
     ax = data.plot.scatter(x=T_label, y=kappa_label, c='red')
 
+    fitted_data = pd.DataFrame()
+    linear_fit = compute_intersection(T, data[kappa_label])
+    zero = -linear_fit[0] / linear_fit[1]
+    print(zero)
+    fitted_data[T_label] = np.linspace(zero, max(T), 100)
+    fitted_data[kappa_label] = linear_fit(fitted_data[T_label])
+
+    fitted_data.plot.line(x=T_label, y=kappa_label, c='blue', ax=ax)
+
     ax.set_title('Зависимость $\\frac{f^2}{f_0^2 - f^2}$ от $T$.')
+    ax.set_xlim(min(T))
 
     return ax
 
