@@ -4,6 +4,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from matplotlib import rc
+
+rc('font', **{'family': 'serif'})
+rc('text', usetex=True)
+rc('text.latex', unicode=True)
+rc('text.latex', preamble=r'\usepackage[utf8]{inputenc}')
+rc('text.latex', preamble=r'\usepackage[russian]{babel}')
+rc('text.latex', preamble=r'\usepackage{amsmath}')
 
 def _setup_axes(plotter: Callable[[Any], plt.Axes]) -> Callable[[Any], None]:
     def wrapper(*args, **kwargs):
@@ -29,15 +37,15 @@ def plot_specter(v_from_alpha: np.ndarray, v_0: float, r: float):
 
     data = pd.DataFrame()
     y_label = ''
-    x_label = '$\\alpha$, $grad$'
+    x_label = '$\\lambda, \\textup{\AA}$'
 
     data[x_label] = _convert_from_alpha_to_wavelength(v_from_alpha['alpha'])
     data[y_label] = _normalize_to_bulb_specter(_convert_to_i(v_from_alpha['V'] - v_0, r))
+    data[y_label] = data[y_label] / np.max(data[y_label])
     ax = data.plot.scatter(x=x_label, y=y_label)
-    ax.set_ylim(0, None)
-    ax.set_xlim(4000, 11000)
 
-    ax.set_ylim(0, np.max(data[y_label]) * 1.1)
+    ax.set_xlim(4000, 11000)
+    ax.set_ylim(0, 1.1)
 
     return ax
 
@@ -48,7 +56,7 @@ def main():
     ax = plot_specter(v_from_alpha=cd_s, v_0=v_0_cd_s, r=4.0e+04)
 
     cd_se = pd.read_csv('./data/CdSe.csv')
-    v_0_cd_se = 0.31
+    v_0_cd_se = 0.18
     ax = plot_specter(cd_se, v_0_cd_se, r=4.0e+04)
 
 if __name__ == '__main__':
