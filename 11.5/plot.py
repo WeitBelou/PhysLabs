@@ -5,13 +5,7 @@ import matplotlib.pyplot as plt
 def main():
     data = pd.read_csv('./data/volt-amper.csv')
 
-    R_1 = 630
-    R_2 = 630
-    R_3 = 630
-
-    K = (R_1 + 2 * (R_2 + R_3)) / ((R_1 + 2 * R_2) * R_3)
-
-    data['I'] = data['I'] * K * 1e3
+    data['V'] = data['V'] * 1e-3
 
     ax = data.plot.scatter(x='V', y='I')
 
